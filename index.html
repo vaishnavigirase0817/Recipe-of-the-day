@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe of the day - Discover Delicious Recipes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <h2>Welcome Back!</h2>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                    <button type="button" class="guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
+                </form>
+                
+                <!-- Signup Form -->
+                <form id="signupForm" class="auth-form">
+                    <h2>Create Account</h2>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signupName" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signupEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Sign Up</button>
+                    <button type="button" class="guest-btn" onclick="continueAsGuest()">Continue as Guest</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>Recipe Of the Day</span>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-menu">
+                        <span id="userGreeting">Welcome, Guest!</span>
+                        <button id="authButton" class="auth-button" onclick="showAuthModal()">Login</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button class="tab-btn" data-tab="explore">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </button>
+            <button class="tab-btn" data-tab="favorites">
+                <i class="fas fa-heart"></i>
+                <span>Favorites</span>
+            </button>
+            <button class="tab-btn" data-tab="nutrition">
+                <i class="fas fa-chart-pie"></i>
+                <span>Nutrition</span>
+            </button>
+            <button class="tab-btn" data-tab="profile">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Tab -->
+            <div id="homeTab" class="tab-content active">
+                <div class="hero-section">
+                    <h1>Discover Amazing Recipes</h1>
+                    <p>Find personalized, healthy recipes with detailed nutrition information</p>
+                    
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search by ingredient, cuisine, or dish name...">
+                            <button id="voiceSearchBtn" class="voice-btn" onclick="startVoiceSearch()" title="Voice Search">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button id="searchBtn" class="search-btn">Search</button>
+                        </div>
+                        
+                        <div class="filters">
+                            <select id="cuisineFilter">
+                                <option value="">All Cuisines</option>
+                                <option value="italian">Italian</option>
+                                <option value="chinese">Chinese</option>
+                                <option value="mexican">Mexican</option>
+                                <option value="indian">Indian</option>
+                                <option value="mediterranean">Mediterranean</option>
+                                <option value="japanese">Japanese</option>
+                                <option value="thai">Thai</option>
+                                <option value="korean">Korean</option>
+                                <option value="french">French</option>
+                                <option value="american">American</option>
+                                
+                            </select>
+                            
+                            <select id="dietFilter">
+                                <option value="">All Diets</option>
+                                <option value="vegetarian">Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                                <option value="keto">Keto</option>
+                                <option value="paleo">Paleo</option>
+                                <option value="gluten-free">Gluten-Free</option>
+                            </select>
+                            
+                            <select id="timeFilter">
+                                <option value="">Any Time</option>
+                                <option value="15">Under 15 min</option>
+                                <option value="30">Under 30 min</option>
+                                <option value="60">Under 1 hour</option>
+                            </select>
+                            
+                            <select id="difficultyFilter">
+                                <option value="">Any Difficulty</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Recommendations Section -->
+                <div id="aiRecommendations" class="recommendations-section"></div>
+                
+                <!-- Quick Access Categories -->
+                <div class="quick-categories">
+                    <button class="category-btn" onclick="showQuickRecipes()">
+                        <i class="fas fa-clock"></i> Quick (< 20 min)
+                    </button>
+                    <button class="category-btn" onclick="showHealthyRecipes()">
+                        <i class="fas fa-leaf"></i> Healthy
+                    </button>
+                    <button class="category-btn" onclick="showPopularRecipes()">
+                        <i class="fas fa-fire"></i> Popular
+                    </button>
+                    <button class="category-btn" onclick="showSeasonalRecipes()">
+                        <i class="fas fa-calendar"></i> Seasonal
+                    </button>
+                    <button class="category-btn" onclick="showRecipeComparison()">
+                        <i class="fas fa-balance-scale"></i> Compare Recipes
+                    </button>
+                </div>
+                
+                <div id="searchResults" class="recipe-grid"></div>
+            </div>
+
+            <!-- Explore Tab -->
+            <div id="exploreTab" class="tab-content">
+                <h2>Explore Popular Recipes</h2>
+                <!-- Recipe of the Day -->
+                <div id="recipeOfDay" class="recipe-of-day-container"></div>
+                
+                <!-- AI Recommendations -->
+                <div id="aiRecommendations" class="recommendations-container"></div>
+                
+                <div class="cuisine-categories">
+                    <div class="category-card" onclick="searchByCuisine('italian')">
+                        <i class="fas fa-pizza-slice"></i>
+                        <h3>Italian</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('chinese')">
+                        <i class="fas fa-dragon"></i>
+                        <h3>Chinese</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('mexican')">
+                        <i class="fas fa-pepper-hot"></i>
+                        <h3>Mexican</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('indian')">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Indian</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('japanese')">
+                        <i class="fas fa-torii-gate"></i>
+                        <h3>Japanese</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('thai')">
+                        <i class="fas fa-seedling"></i>
+                        <h3>Thai</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('korean')">
+                        <i class="fas fa-yin-yang"></i>
+                        <h3>Korean</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('french')">
+                        <i class="fas fa-wine-glass"></i>
+                        <h3>French</h3>
+                        <i class="fas fa-columns"></i>
+                        <h3>Greek</h3>
+                    </div>
+                    <div class="category-card" onclick="searchByCuisine('american')">
+                        <i class="fas fa-hamburger"></i>
+                        <h3>American</h3>
+                    </div>
+                </div>
+                <div id="exploreResults" class="recipe-grid"></div>
+            </div>
+
+            <!-- Favorites Tab -->
+            <div id="favoritesTab" class="tab-content">
+                <h2>Your Favorite Recipes</h2>
+                <div id="favoritesGrid" class="recipe-grid">
+                    <div class="empty-state">
+                        <i class="fas fa-heart"></i>
+                        <p>No favorites yet. Start exploring recipes and save your favorites!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nutrition Tab -->
+            <div id="nutritionTab" class="tab-content">
+                <h2>Nutrition Tracker</h2>
+                <div class="nutrition-dashboard">
+                    <div class="nutrition-summary">
+                        <div class="nutrition-card">
+                            <h3>Daily Calories</h3>
+                            <div class="nutrition-value">
+                                <span id="dailyCalories">0</span>
+                                <small>kcal</small>
+                            </div>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Protein</h3>
+                            <div class="nutrition-value">
+                                <span id="dailyProtein">0</span>
+                                <small>g</small>
+                            </div>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Carbs</h3>
+                            <div class="nutrition-value">
+                                <span id="dailyCarbs">0</span>
+                                <small>g</small>
+                            </div>
+                        </div>
+                        <div class="nutrition-card">
+                            <h3>Fat</h3>
+                            <div class="nutrition-value">
+                                <span id="dailyFat">0</span>
+                                <small>g</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nutritionHistory" class="nutrition-history"></div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profileTab" class="tab-content">
+                <h2>Profile</h2>
+                <div class="profile-container">
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-details">
+                            <h3 id="profileName">Guest User</h3>
+                            <p id="profileEmail">guest@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalFavorites">0</span>
+                            <span class="stat-label">Favorite Recipes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalSearches">0</span>
+                            <span class="stat-label">Searches Made</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="profile-btn" onclick="showMealPlanner()">
+                            <i class="fas fa-calendar-alt"></i>
+                            Meal Planner
+                        </button>
+                        <button class="profile-btn" onclick="showShoppingList()">
+                            <i class="fas fa-shopping-cart"></i>
+                            Shopping List
+                        </button>
+                        <button class="profile-btn" onclick="clearData()">
+                            <i class="fas fa-trash"></i>
+                            Clear Data
+                        </button>
+                        <button class="share-btn twitter" onclick="shareToTwitter('${recipe.id}')">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </button>
+                        <button class="profile-btn logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Recipe Detail Modal -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content recipe-modal-content">
+            <span class="close">&times;</span>
+            <div id="recipeDetails" class="recipe-details"></div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading recipes...</p>
+    </div>
+
+    <!-- Meal Planner Modal -->
+    <div id="mealPlannerModal" class="modal">
+        <div class="modal-content recipe-modal-content">
+            <span class="close">&times;</span>
+            <div class="meal-planner-content">
+                <h2><i class="fas fa-calendar-alt"></i> Weekly Meal Planner</h2>
+                
+                <div class="meal-planner-controls">
+                    <div class="planner-filters">
+                        <select id="planDietFilter">
+                            <option value="">Any Diet</option>
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="keto">Keto</option>
+                            <option value="paleo">Paleo</option>
+                        </select>
+                        <select id="planCuisineFilter">
+                            <option value="">Any Cuisine</option>
+                            <option value="italian">Italian</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="mexican">Mexican</option>
+                            <option value="indian">Indian</option>
+                            <option value="mediterranean">Mediterranean</option>
+                        </select>
+                        <input type="number" id="calorieTarget" placeholder="Daily Calories" value="2000" min="1000" max="4000">
+                    </div>
+                    <button class="auth-btn" onclick="generateMealPlan()">
+                        <i class="fas fa-magic"></i> Generate Meal Plan
+                    </button>
+                </div>
+                
+                <div id="mealPlanContainer" class="meal-plan-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping List Modal -->
+    <div id="shoppingListModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="shopping-list-content">
+                <h2><i class="fas fa-shopping-cart"></i> Shopping List</h2>
+                <div id="shoppingListContainer" class="shopping-list-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-download"></i> Import Recipe from URL</h2>
+            <div class="import-form">
+                <input type="url" id="importUrl" placeholder="Enter recipe URL..." required>
+                <button class="auth-btn" onclick="importRecipe()">
+                    <i class="fas fa-import"></i> Import Recipe
+                </button>
+            </div>
+            <p class="import-note">
+                <i class="fas fa-info-circle"></i>
+                Supports popular recipe websites and food blogs
+            </p>
+        </div>
+    </div>
+
+    <!-- Cooking Mode Modal -->
+    <div id="cookingModeModal" class="modal">
+        <div class="modal-content cooking-mode-content">
+            <span class="close">&times;</span>
+            <div class="cooking-mode-header">
+                <h2 id="cookingRecipeTitle">Cooking Mode</h2>
+                <div class="cooking-controls">
+                    <button class="cooking-btn" onclick="previousStep()">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span id="stepCounter">Step 1 of 6</span>
+                    <button class="cooking-btn" onclick="nextStep()">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="cookingStepContent" class="cooking-step">
+                <!-- Dynamic step content -->
+            </div>
+            <div class="cooking-footer">
+                <button class="cooking-btn secondary" onclick="toggleTimer()">
+                    <i class="fas fa-clock"></i> <span id="timerText">Start Timer</span>
+                </button>
+                <button class="cooking-btn" onclick="markStepComplete()">
+                    <i class="fas fa-check"></i> Complete Step
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content comparison-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-balance-scale"></i> Recipe Comparison</h2>
+            <div class="comparison-selector">
+                <select id="recipe1Select">
+                    <option value="">Select first recipe...</option>
+                </select>
+                <span class="vs-text">VS</span>
+                <select id="recipe2Select">
+                    <option value="">Select second recipe...</option>
+                </select>
+                <button class="auth-btn" onclick="compareRecipes()">Compare</button>
+            </div>
+            <div id="comparisonResults" class="comparison-results">
+                <!-- Dynamic comparison content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Tutorial Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content video-content">
+            <span class="close">&times;</span>
+            <h2 id="videoTitle">Video Tutorial</h2>
+            <div class="video-container">
+                <div id="videoPlayer" class="video-placeholder">
+                    <i class="fas fa-play-circle"></i>
+                    <p>Video tutorial will play here</p>
+                </div>
+            </div>
+            <div class="video-info">
+                <p id="videoDescription">Learn to cook this recipe step by step</p>
+                <div class="video-controls">
+                    <button class="video-btn" onclick="playVideo()">
+                        <i class="fas fa-play"></i> Play
+                    </button>
+                    <button class="video-btn" onclick="pauseVideo()">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button class="video-btn" onclick="restartVideo()">
+                        <i class="fas fa-redo"></i> Restart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cooking Timer Widget -->
+    <div id="timerWidget" class="timer-widget hidden">
+        <div class="timer-content">
+            <h4>Cooking Timer</h4>
+            <div id="timerDisplay" class="timer-display">00:00</div>
+            <button class="timer-btn" onclick="stopTimer()">Stop</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="meal-planner.js"></script>
+    <script src="enhanced-features.js"></script>
+    <script src="advanced-features.js"></script>
+</body>
+</html>
